@@ -1,4 +1,6 @@
 import WebSocket, { createWebSocketStream } from "ws";
+import { mouse, left, right, up, down, centerOf, Region } from "@nut-tree/nut-js";
+import Jimp from 'jimp';
 
 function handleConnection(ws: WebSocket): void {
   const duplex = createWebSocketStream(ws, {
@@ -9,34 +11,40 @@ function handleConnection(ws: WebSocket): void {
   duplex.on('data', async (data: Buffer) => {
     try {
       const [ command, ...args ] = data.toString().split(' ');
-      // const { x, y } = robot.getMousePos();
-      console.log('received: %s', data);
+      const { x, y } = await mouse.getPosition();
+      console.log(`x is ${x}, y is ${y}`);
+      // console.log('received: %s', data);
       
       const [a, b] = args.map((arg) => parseInt(arg));
       switch (command) {
         case ('mouse_up'): {
-          // moveMouse(duplex, 'up', x, y - a);
+          await mouse.move(up(a));
+          duplex.write(`mouse_up`);        
           break;
         };
         case ('mouse_down'): {
-          // moveMouse(duplex, 'down', x, y + a);
+          await mouse.move(down(a));
+          duplex.write(`mouse_down`);
           break;
         };
         case ('mouse_left'): {
-          // moveMouse(duplex, 'left', x - a, y);
+          await mouse.move(left(a));
+          duplex.write(`mouse_left`);
           break;
         };
         case ('mouse_right'): {
-          // moveMouse(duplex, 'right', x + a, y);
+          await mouse.move(right(a));
+          duplex.write(`mouse_right`);
           break;
         };
         case ('mouse_position'): {
-          // duplex.write(`mouse_position ${x},${y}\0`);
-          // console.log(`mouse_position ${x}, ${y}`);
+          duplex.write(`mouse_position ${x},${y}\0`);
+          console.log(`mouse_position ${x}, ${y}`);
           break;
         };
         case ('draw_square'): {
           // drawShape(duplex, 'square', x, y, a);
+          // сначала делаем pressButton, потом движения через move, и в конце делаем releaseButton
           break;
         };
         case ('draw_rectangle'): {

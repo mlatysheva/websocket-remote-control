@@ -1,19 +1,26 @@
 import { httpServer } from "./src/http_server/index";
-import { mouse, left, right, up, down, centerOf, Region } from "@nut-tree/nut-js";
-import Jimp from 'jimp';
 import { WebSocketServer } from 'ws';
+import dotenv from 'dotenv';
+import { cwd } from 'process';
+import { resolve } from 'path';
+import { handleConnection } from './src/connection/handleConnection';
 
-const HTTP_PORT = 8181;
-const WSS_PORT = 8080;
+dotenv.config({ path: resolve(cwd(), '.env') });
+
+const HTTP_PORT = process.env.HTTP_PORT || 8181;
+const WSS_PORT = process.env.WSS_PORT || 8080;
 
 console.log(`Start static http server on the ${HTTP_PORT} port!`);
-httpServer.listen(HTTP_PORT);
+httpServer.listen(HTTP_PORT); 
 
-const wss = new WebSocketServer({ port: WSS_PORT});
+const wss = new WebSocketServer({ port: Number(WSS_PORT)});
 
-wss.on('connection', ws => {
-  console.log('Connection accepted');
-  ws.on('message', data => {
-    
-  })
-})
+console.log(`Websocket server is running on ${WSS_PORT} port.`);
+
+wss.on('connection', handleConnection);
+
+process.on("SIGNINT", () => {
+  console.log("WebSocketServer closed");
+  wss.close();
+  process.exit(0);
+});
