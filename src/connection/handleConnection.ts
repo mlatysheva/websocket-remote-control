@@ -1,6 +1,7 @@
 import WebSocket, { createWebSocketStream } from "ws";
 import { mouse, left, right, up, down, centerOf, Region } from "@nut-tree/nut-js";
 import Jimp from 'jimp';
+import { drawShape } from '../utils/drawShape';
 
 function handleConnection(ws: WebSocket): void {
   const duplex = createWebSocketStream(ws, {
@@ -13,7 +14,6 @@ function handleConnection(ws: WebSocket): void {
       const [ command, ...args ] = data.toString().split(' ');
       const { x, y } = await mouse.getPosition();
       console.log(`x is ${x}, y is ${y}`);
-      // console.log('received: %s', data);
       
       const [a, b] = args.map((arg) => parseInt(arg));
       switch (command) {
@@ -43,16 +43,15 @@ function handleConnection(ws: WebSocket): void {
           break;
         };
         case ('draw_square'): {
-          // drawShape(duplex, 'square', x, y, a);
-          // сначала делаем pressButton, потом движения через move, и в конце делаем releaseButton
+          drawShape(duplex, 'square', x, y, a);
           break;
         };
         case ('draw_rectangle'): {
-          // drawShape(duplex, 'rectangle', x, y, a, b);
+          drawShape(duplex, 'rectangle', x, y, a, b);
           break;
         };
         case ('draw_circle'): {
-          // drawShape(duplex, 'circle', x, y, a);
+          drawShape(duplex, 'circle', x, y, a);
           break;
         };
         case ('prnt_scrn'): {    
