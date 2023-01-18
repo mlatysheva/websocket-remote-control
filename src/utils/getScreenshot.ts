@@ -10,11 +10,9 @@ export async function getScreenshot(x: number, y: number, width: number, height:
       data: img.data,
       width: img.width,
       height: img.height
-    }, (err: any, image: Jimp) =>{
+    }, (err) => {
       if (err) {
         console.error(err);
-      } else {
-        image.write("./screen.png");
       }
     });    
     return screenshot;

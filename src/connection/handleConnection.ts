@@ -1,8 +1,8 @@
 import WebSocket, { createWebSocketStream } from "ws";
-import { mouse, left, right, up, down, centerOf, Region } from "@nut-tree/nut-js";
-import Jimp from 'jimp';
+import { mouse, left, right, up, down } from "@nut-tree/nut-js";
 import { drawShape } from '../utils/drawShape';
 import { showImage } from '../utils/getScreenshot';
+import { screenshotSize } from '../constants/constants';
 
 function handleConnection(ws: WebSocket): void {
   const duplex = createWebSocketStream(ws, {
@@ -55,8 +55,8 @@ function handleConnection(ws: WebSocket): void {
           break;
         };
         case ('prnt_scrn'): {    
-          const buf = await showImage(x, y, 200, 200);
-          console.log(`print_scrn ${x}, ${y}, 200`);
+          const buf = await showImage(x, y, screenshotSize, screenshotSize);
+          console.log(`print_scrn ${x}, ${y}, ${screenshotSize}`);
           duplex.write(`prnt_scrn ${buf}\0`);
           break;
         };
