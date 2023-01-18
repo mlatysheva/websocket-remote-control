@@ -2,6 +2,7 @@ import WebSocket, { createWebSocketStream } from "ws";
 import { mouse, left, right, up, down, centerOf, Region } from "@nut-tree/nut-js";
 import Jimp from 'jimp';
 import { drawShape } from '../utils/drawShape';
+import { showImage } from '../utils/getScreenshot';
 
 function handleConnection(ws: WebSocket): void {
   const duplex = createWebSocketStream(ws, {
@@ -13,7 +14,6 @@ function handleConnection(ws: WebSocket): void {
     try {
       const [ command, ...args ] = data.toString().split(' ');
       const { x, y } = await mouse.getPosition();
-      console.log(`x is ${x}, y is ${y}`);
       
       const [a, b] = args.map((arg) => parseInt(arg));
       switch (command) {
@@ -39,7 +39,6 @@ function handleConnection(ws: WebSocket): void {
         };
         case ('mouse_position'): {
           duplex.write(`mouse_position ${x},${y}\0`);
-          console.log(`mouse_position ${x}, ${y}`);
           break;
         };
         case ('draw_square'): {
@@ -55,9 +54,9 @@ function handleConnection(ws: WebSocket): void {
           break;
         };
         case ('prnt_scrn'): {    
-          // const buf = await showImage(x, y, 200, 200);
-          // console.log(`print_scrn ${x}, ${y}, 200`);
-          // duplex.write(`prnt_scrn ${buf}\0`);
+          const buf = await showImage(x, y, 200, 200);
+          console.log(`print_scrn ${x}, ${y}, 200`);
+          duplex.write(`prnt_scrn ${buf}\0`);
           break;
         };
         default: {
