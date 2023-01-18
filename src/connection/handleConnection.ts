@@ -39,6 +39,7 @@ function handleConnection(ws: WebSocket): void {
         };
         case ('mouse_position'): {
           duplex.write(`mouse_position ${x},${y}\0`);
+          console.log(`mouse_position ${x},${y}`)
           break;
         };
         case ('draw_square'): {
