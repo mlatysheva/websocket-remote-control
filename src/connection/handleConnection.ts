@@ -1,8 +1,9 @@
 import WebSocket, { createWebSocketStream } from "ws";
 import { mouse, left, right, up, down } from "@nut-tree/nut-js";
 import { drawShape } from '../utils/drawShape';
-import { showImage } from '../utils/getScreenshot';
+// import { showImage } from '../utils/getScreenshot';
 import { screenshotSize } from '../constants/constants';
+import { getScreenshot } from '../utils/getScreenshot';
 
 function handleConnection(ws: WebSocket): void {
   const duplex = createWebSocketStream(ws, {
@@ -19,27 +20,27 @@ function handleConnection(ws: WebSocket): void {
       switch (command) {
         case ('mouse_up'): {
           await mouse.move(up(a));
-          duplex.write(`mouse_up`);        
+          duplex.write(`mouse_up_${a}`);        
           break;
         };
         case ('mouse_down'): {
           await mouse.move(down(a));
-          duplex.write(`mouse_down`);
+          duplex.write(`mouse_down_${a}`);
           break;
         };
         case ('mouse_left'): {
           await mouse.move(left(a));
-          duplex.write(`mouse_left`);
+          duplex.write(`mouse_left_${a}`);
           break;
         };
         case ('mouse_right'): {
           await mouse.move(right(a));
-          duplex.write(`mouse_right`);
+          duplex.write(`mouse_right_${a}`);
           break;
         };
         case ('mouse_position'): {
           duplex.write(`mouse_position ${x},${y}\0`);
-          console.log(`mouse_position ${x},${y}`)
+          console.log(`mouse_position ${x}, ${y}`)
           break;
         };
         case ('draw_square'): {
@@ -55,7 +56,7 @@ function handleConnection(ws: WebSocket): void {
           break;
         };
         case ('prnt_scrn'): {    
-          const buf = await showImage(x, y, screenshotSize, screenshotSize);
+          const buf = await getScreenshot(x, y, screenshotSize, screenshotSize);
           console.log(`print_scrn ${x}, ${y}, ${screenshotSize}`);
           duplex.write(`prnt_scrn ${buf}\0`);
           break;

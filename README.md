@@ -15,7 +15,7 @@ The backend is able to do the following:
 - Send current mouse coordinates
 - Send a screenshot capture
 
-### User interface with websocket commands performed:
+#### User interface with websocket commands performed:
 
 ![User interface with websocket commands](screenshots-UI/screenshot_websocket.png)
 
